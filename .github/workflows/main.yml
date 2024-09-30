@@ -2,18 +2,20 @@ name: Comentario por creación de archivo
 
 on:
   files:
-    - '**.txt'  # Puedes cambiar la extensión a la que quieras monitorear
+    - '**.txt'  # Se ejecutará cuando se cree un archivo con extensión .txt
 
 jobs:
   comment-on-creation:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v3
+        with:
+          fetch-depth: 0  # Descarga todo el historial del repositorio
       - name: Obtener el número del issue o pull request
         id: get_pr
         run: |
-          # Aquí debes reemplazar 'your-repo' y 'your-owner' con los valores correctos
-          echo "::set-output name=issue_number::$(gh issue list --repo your-owner/your-repo --state open --label 'creation-comment' | awk 'NR==1{print $1}')"
+          # Reemplaza 'tu-organizacion/tu-repositorio' con los valores correctos
+          echo "::set-output name=issue_number::$(gh issue list --repo tu-organizacion/tu-repositorio --state open --label 'creacion-archivo' | awk 'NR==1{print $1}')"
       - name: Publicar comentario
         uses: actions/github-script@v6
         with:
@@ -23,5 +25,5 @@ jobs:
               issue_number: context.job.steps.get_pr.outputs.issue_number,
               owner: context.repo.owner,
               repo: context.repo.repo,
-              body: 'Gracias por crear el archivo!'
+              body: 'Thanks for creating the file!'  # ¡Aquí cambiamos el mensaje a inglés!
             })
